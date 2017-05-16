@@ -1,5 +1,6 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.model.HostHolder;
 import com.nowcoder.model.Question;
 import com.nowcoder.model.ViewObject;
 import com.nowcoder.service.QuestionService;
@@ -28,6 +29,9 @@ public class HomeController {
 
     @Autowired
     QuestionService questionService;
+
+    @Autowired
+    HostHolder hostHolder;
 
     @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET})
     public String userindex(Model model, @PathVariable("userId") int userId) {
