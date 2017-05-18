@@ -2,6 +2,7 @@ package com.nowcoder.controller;
 
 import com.nowcoder.model.*;
 import com.nowcoder.service.CommentService;
+import com.nowcoder.service.LikeService;
 import com.nowcoder.service.QuestionService;
 import com.nowcoder.service.UserService;
 import com.nowcoder.util.WendaUtil;
@@ -35,6 +36,9 @@ public class QuestionController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeService likeService;
+
     @RequestMapping(value = "/question/add" ,method = {RequestMethod.POST})
     @ResponseBody
     public String addQuestion(@RequestParam("title") String title,@RequestParam("content") String content){
@@ -59,7 +63,7 @@ public class QuestionController {
         return WendaUtil.getJSONString(1,"失败");
     }
 
-    @RequestMapping(value = "/question/{qid}")
+    @RequestMapping(value = "/question/{qid}", method = {RequestMethod.GET})
     public String questionDetail(Model model, @PathVariable("qid") int qid){
         Question question=questionService.selectById(qid);
         model.addAttribute("question",question);
@@ -69,6 +73,13 @@ public class QuestionController {
         for(Comment comment:commentList){
             ViewObject vo=new ViewObject();
             vo.set("comment",comment);
+
+            if(hostHolder.getUser()==null){
+                vo.set("liked",0);
+            }else{
+                vo.set("liked",likeService.getLikeStatus(hostHolder.getUser().getId(),EntityType.ENTITY_COMMENT,comment.getId()));
+            }
+            vo.set("likeCount",likeService.getLikeCount(EntityType.ENTITY_COMMENT,comment.getId()));
             vo.set("user",userService.getUser(comment.getUserId()));
             comments.add(vo);
         }

@@ -1,5 +1,6 @@
 package com.nowcoder.controller;
 
+import com.nowcoder.async.EventProducer;
 import com.nowcoder.dao.LoginTicketDao;
 import com.nowcoder.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +27,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @Autowired
     private LoginTicketDao loginTicketDao;
@@ -69,6 +73,11 @@ public class LoginController {
                 Cookie cookie=new Cookie("ticket",map.get("ticket"));
                 cookie.setPath("/");
                 response.addCookie(cookie);
+
+//                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+//                        .setExt("username",username).setExt("email","670775295@qq.com")
+//                        .setActorId(Integer.parseInt(map.get("userId"))));
+
                 if(StringUtils.isNotBlank(next)){
                     return "redirect:"+next;
                 }
